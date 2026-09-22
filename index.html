@@ -1,0 +1,534 @@
+<!--
+========================================================
+PROJECT AUTHORSHIP RECORD
+Prepared / Developed by: Farhan Labib
+Project: Laptop Collection Data
+========================================================
+-->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Laptop, Desktop & Monitor Information Collection</title>
+<style>
+  :root{
+    --bg:#f2f6f8;
+    --card:#ffffff;
+    --text:#182334;
+    --muted:#6d7c8f;
+    --line:#e5ebef;
+    --teal:#337d7a;
+    --teal-dark:#286865;
+    --soft:#eaf5f4;
+    --danger:#c84a4a;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--text);
+    font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",Arial,sans-serif;
+  }
+  .page{max-width:1240px;margin:0 auto;padding:52px 32px 70px}
+  .top{display:flex;justify-content:space-between;gap:30px;align-items:flex-start;margin-bottom:34px}
+  .eyebrow{font-size:14px;font-weight:800;letter-spacing:2px;color:#2f716f;margin-bottom:14px}
+  h1{font-size:35px;line-height:1.15;margin:0 0 12px;font-weight:800;letter-spacing:-.8px}
+  .subtitle{font-size:16px;color:var(--muted);margin:0}
+  .live{white-space:nowrap;border:1px solid #d7ebe9;background:#edf8f7;color:#2d6866;border-radius:28px;padding:13px 18px;font-weight:750}
+  .live span{font-size:10px;vertical-align:2px;margin-right:7px}
+  .card{background:var(--card);border-radius:20px;box-shadow:0 15px 45px rgba(35,55,70,.08);padding:40px 34px}
+  .section{padding:0 0 30px;margin-bottom:30px;border-bottom:1px solid var(--line)}
+  .section:last-of-type{margin-bottom:24px}
+  .section-head{display:flex;gap:14px;align-items:flex-start;margin-bottom:27px}
+  .num{width:37px;height:37px;flex:none;border-radius:12px;background:var(--soft);color:#2f7774;display:flex;align-items:center;justify-content:center;font-size:13px;font-weight:850}
+  .section h2{font-size:21px;margin:1px 0 4px}
+  .section p{margin:0;color:var(--muted);font-size:14px}
+  .grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:18px}
+  .grid2{display:grid;grid-template-columns:1fr 2fr;gap:18px}
+  label{display:block;font-size:13px;font-weight:800;margin:0 0 8px;color:#334257}
+  .req{color:var(--danger)}
+  input,select,textarea{
+    width:100%;border:1px solid #dce4ea;border-radius:10px;background:#fff;
+    padding:13px 14px;font:inherit;font-size:14px;color:var(--text);outline:none;
+    transition:border .15s,box-shadow .15s;
+  }
+  input:focus,select:focus,textarea:focus{border-color:#78aaa7;box-shadow:0 0 0 3px rgba(51,125,122,.10)}
+  textarea{min-height:112px;resize:vertical}
+  .laptop-wrap{display:grid;grid-template-columns:1fr 2fr;gap:18px;align-items:start}
+  .custom-count{margin-top:16px;display:none}
+  .details-title{font-size:13px;font-weight:800;color:#334257;margin-bottom:8px}
+  .laptop-list{display:flex;flex-direction:column;gap:12px}
+  .laptop-item{display:grid;grid-template-columns:34px 1fr;gap:10px;align-items:start}
+  .serial{height:46px;width:34px;border-radius:10px;background:#f0f6f6;color:#2f7774;display:flex;align-items:center;justify-content:center;font-weight:850;font-size:13px}
+  .laptop-item textarea{min-height:78px}
+  .hint{font-size:12px;color:var(--muted);margin-top:7px}
+  .hidden{display:none!important}
+  .notice{background:#f7f9fa;border:1px solid #e8edf0;border-radius:11px;padding:15px 16px;color:#68798c;font-size:13px;margin-bottom:18px}
+  .actions{display:flex;justify-content:flex-end;gap:10px}
+  button{border:0;border-radius:11px;padding:14px 20px;font:inherit;font-weight:800;cursor:pointer}
+  .clear{background:#edf0f2;color:#465364}
+  .submit{background:var(--teal);color:white;min-width:210px}
+  .submit:hover{background:var(--teal-dark)}
+  .success{display:none;margin-top:18px;background:#eaf7f1;border:1px solid #cde9dc;color:#23654a;padding:14px 16px;border-radius:11px;font-size:14px;font-weight:700}
+  .success-page{display:none}
+  .success-card{text-align:center;max-width:760px;margin:0 auto;padding:70px 34px}
+  .success-icon{width:72px;height:72px;margin:0 auto 22px;border-radius:50%;background:#eaf7f1;color:#23654a;display:flex;align-items:center;justify-content:center;font-size:38px;font-weight:800}
+  .success-card h2{font-size:30px;margin:0 0 12px}
+  .success-card p{font-size:16px;color:var(--muted);margin:0}
+  .error{display:none;margin-top:14px;color:var(--danger);font-size:13px;font-weight:700}
+  @media(max-width:800px){
+    .page{padding:30px 16px 50px}.top{display:block}.live{display:inline-block;margin-top:18px}
+    .card{padding:28px 20px}.grid3,.grid2,.laptop-wrap{grid-template-columns:1fr}
+    h1{font-size:29px}.actions{flex-direction:column-reverse}.actions button{width:100%}
+  }
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <div>
+      <div class="eyebrow">ACI PLC</div>
+      <h1>Staff Laptop, Desktop &amp; Monitor Information Collection</h1>
+      <p class="subtitle">Finance & Planning Department</p>
+    </div>
+    <div class="live"><span>●</span>Live Collection</div>
+  </header>
+
+  <main class="card" id="formPage">
+    <form id="assetForm" novalidate>
+      <section class="section">
+        <div class="section-head">
+          <div class="num">01</div>
+          <div><h2>Staff Information</h2><p>Enter the staff member's basic information.</p></div>
+        </div>
+        <div class="grid3">
+          <div><label>Staff ID <span class="req">*</span></label><input id="staffId" required autocomplete="off"></div>
+          <div><label>Staff Name <span class="req">*</span></label><input id="staffName" required></div>
+          <div><label>Designation <span class="req">*</span></label><input id="designation" required></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head">
+          <div class="num">02</div>
+          <div><h2>Laptop Information </h2><p>Record the number of laptops and details for the staff member.</p></div>
+        </div>
+
+        <div class="laptop-wrap">
+          <div>
+            <label>No. of Laptop <span class="req">*</span></label>
+            <select id="laptopCount" required>
+              <option value="">Select</option>
+              <option value="1">1</option><option value="2">2</option>
+              <option value="3">3</option><option value="4">4</option>
+              <option value="more">More than 4</option>
+            </select>
+            <div id="customCount" class="custom-count">
+              <label>Enter No. of Laptop <span class="req">*</span></label>
+              <input id="customLaptopCount" type="number" min="5" step="1" placeholder="e.g. 5">
+              <div class="hint">Press Enter after entering the number.</div>
+            </div>
+          </div>
+          <div>
+            <div class="details-title">Laptop Details; <span style="font-size:13px;font-weight:600;color: var(--muted)">(Settings --&gt; Home)</span> <span class="req">*</span></div>
+            <div id="laptopList" class="laptop-list"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div class="num">03</div><div><h2>Desktop Information</h2><p>Record whether desktop computers are assigned and their details.</p></div></div>
+        <div class="laptop-wrap">
+          <div><label>Desktop <span class="req">*</span></label><select id="desktopAssigned" required><option value="">Select</option><option value="No">No</option><option value="Yes">Yes</option></select>
+            <div id="desktopCountWrap" class="custom-count"><label>No. of Desktop <span class="req">*</span></label><select id="desktopCount"><option value="">Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="more">More than 4</option></select>
+              <div id="customDesktopCountWrap" class="custom-count"><label>Enter No. of Desktop <span class="req">*</span></label><input id="customDesktopCount" type="number" min="5" step="1" placeholder="e.g. 5"><div class="hint">Press Enter after entering the number.</div></div>
+            </div>
+          </div>
+          <div><div class="details-title">Desktop Details <span class="req">*</span></div><div id="desktopList" class="laptop-list"></div></div>
+        </div>
+      </section>
+
+      <section class="section">
+        <div class="section-head"><div class="num">04</div><div><h2>Monitor Information</h2><p>Record whether monitors are assigned and their details.</p></div></div>
+        <div class="laptop-wrap">
+          <div><label>Monitor <span class="req">*</span></label><select id="monitorAssigned" required><option value="">Select</option><option value="No">No</option><option value="Yes">Yes</option></select>
+            <div id="monitorCountWrap" class="custom-count"><label>No. of Monitor <span class="req">*</span></label><select id="monitorCount"><option value="">Select</option><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="more">More than 4</option></select>
+              <div id="customMonitorCountWrap" class="custom-count"><label>Enter No. of Monitor <span class="req">*</span></label><input id="customMonitorCount" type="number" min="5" step="1" placeholder="e.g. 5"><div class="hint">Press Enter after entering the number.</div></div>
+            </div>
+          </div>
+          <div><div class="details-title">Monitor Details <span class="req">*</span></div><div id="monitorList" class="laptop-list"></div></div>
+        </div>
+      </section>
+
+      <div class="notice">Please check the information before submitting.</div>
+      <div class="actions">
+        <button type="button" class="clear" id="clearBtn">Clear</button>
+        <button type="submit" class="submit">Submit Asset Record →</button>
+      </div>
+      <div id="error" class="error"></div>
+      <div id="success" class="success"></div>
+    </form>
+  </main>
+
+  <main class="card success-page" id="successPage">
+    <div class="success-card">
+      <div class="success-icon">✓</div>
+      <h2>Asset record submitted successfully.</h2>
+      <p>Your information has been recorded.</p>
+    </div>
+  </main>
+</div>
+
+<script>
+const $ = id => document.getElementById(id);
+const laptopCount = $("laptopCount");
+const customCount = $("customCount");
+const customLaptopCount = $("customLaptopCount");
+const laptopList = $("laptopList");
+const desktopAssigned = $("desktopAssigned");
+const desktopCountWrap = $("desktopCountWrap");
+const desktopCount = $("desktopCount");
+const customDesktopCountWrap = $("customDesktopCountWrap");
+const customDesktopCount = $("customDesktopCount");
+const desktopList = $("desktopList");
+const monitorAssigned = $("monitorAssigned");
+const monitorCountWrap = $("monitorCountWrap");
+const monitorCount = $("monitorCount");
+const customMonitorCountWrap = $("customMonitorCountWrap");
+const customMonitorCount = $("customMonitorCount");
+const monitorList = $("monitorList");
+const errorBox = $("error");
+const successBox = $("success");
+const formPage = $("formPage");
+const successPage = $("successPage");
+
+// Employee master data supplied in "Staff Details (Finance & Planning).xlsx".
+const EMPLOYEE_DATA = {"1553":{"name":"Md. Monir Hossain Khan","designation":"Chief Financial Officer"},"1909":{"name":"Abu Hasan Zaman","designation":"Director, Treasury"},"3560":{"name":"Mohammed Jafar Iqbal","designation":"Director, Credit Management"},"3392":{"name":"Mohammad Mahamood Rassul","designation":"Financial Controller, CB & Logistics"},"22456":{"name":"Md. Muktadir Hossain","designation":"Deputy Financial Controller"},"32014":{"name":"Syed Bakhtiar Hossain","designation":"Head of Financial Partnership Management"},"31850":{"name":"Md. Shofiqul Islam","designation":"Head of Finance, ACI Logistics"},"33261":{"name":"Muhammad Main Uddin","designation":"Head of Finance, ACI FL"},"656":{"name":"Md. Akther Hossain","designation":"Head of Management Accounts, ACI"},"4071":{"name":"A.K.M. Arif-Uz-Zaman Khan","designation":"Head of Credit Monitoring"},"41368":{"name":"Md Arif Hossain","designation":"Head of Business Finance"},"38362":{"name":"Mohammad Mahamudul Alam","designation":"Head of Planning"},"33256":{"name":"Shahidul Alam Robi","designation":"Financial Reporting Manager"},"6697":{"name":"A.K.M. Mezbaul Morshed","designation":"Senior Manager, Indirect Tax"},"14880":{"name":"S M Sumsul Islam","designation":"Senior Manager, BI"},"27755":{"name":"Shajedur Rahman","designation":"Senior Manager, Business Finance-Pharma"},"15689":{"name":"Baki Billah","designation":"Senior Manager, Credit"},"20633":{"name":"Md. Mahee Al Islam","designation":"Senior Finance Manager"},"7449":{"name":"Zulker Nine","designation":"Senior Manager, Credit"},"2794":{"name":"Mohammad Kamal Hossain","designation":"Senior Manager, Direct Tax"},"2504":{"name":"Ashiqur Rahman","designation":"Manager, Treasury"},"4795":{"name":"Sabrina Rahman","designation":"Corporate Treasury Manager"},"27408":{"name":"Ashique -E-Elahi Chowdhury","designation":"Manager, Business Analyst"},"17002":{"name":"Pranesh Kumar","designation":"Manager, Business Finance-AH & AG"},"8708":{"name":"Md. Muidul Hassan","designation":"Manager, Receivable Planning"},"1859":{"name":"Md. Harunur Rashid","designation":"Manager, Financial System & Control"},"16780":{"name":"Faisal Ahmed","designation":"Manager, Operations Finance-ACI Motors"},"20101":{"name":"Md. Asharaful Alam","designation":"Manager, Direct Tax"},"10478":{"name":"Md. Main Uddin","designation":"Manager, Accounts"},"19523":{"name":"Farhan Haque","designation":"Manager, Business Analyst-CB"},"23999":{"name":"Mohammed Mainuddin Chowdhury","designation":"Manager, Planning & Budgeting"},"4772":{"name":"Masud Ali Kazi","designation":"Manager, Treasury"},"2207":{"name":"Kamanashis Datta","designation":"Manager, Accounts"},"33401":{"name":"Md. Liakat Hosen","designation":"Finance Manager, ACI Motors"},"3950":{"name":"Mohammad Kabir Hossain","designation":"Manager, Accounts"},"23677":{"name":"Ujjwal Chandra Deb Nath","designation":"Finance Manager"},"6987":{"name":"Mohammad Belayet Hossain","designation":"Manager, Accounts"},"24014":{"name":"Md. Azadul Islam","designation":"Manager, VAT"},"37728":{"name":"Md. Masud Hossain","designation":"Manager, Credit"},"716":{"name":"Biplab Kumar Chakrabortty","designation":"Manager, Corporate Cash"},"7033":{"name":"Mohammad Imamul Hossain","designation":"Manager, Business Finance-Fertilizer"},"40501":{"name":"Md Mostafijur Rahman Sumon","designation":"Manager, Recovery	"},"3091":{"name":"Abul Erfan Mohammad Abdul Hannan","designation":"Manager, Management Accounting"},"19542":{"name":"Liton Chandra Karmakar","designation":"Deputy Manager, Planning"},"20835":{"name":"Md. Shazzadul Islam","designation":"Deputy Manager, Fixed Assets & Advances"},"11278":{"name":"Ajoy Kumar Bhowmik","designation":"Deputy Manager, VAT"},"15006":{"name":"Monjurul Alam","designation":"Deputy Manager, VAT"},"11369":{"name":"Maleque Md. Hasan Bhuiyan","designation":"Deputy Manager, Corporate Cash"},"20113":{"name":"Mohammad Nazim Uddin","designation":"Deputy Manager"},"9223":{"name":"Atiqur Rahman","designation":"Deputy Manager, Costing"},"30817":{"name":"Md. Mukter Hossain","designation":"Deputy Manager, Costing"},"20840":{"name":"Prodip Debnath","designation":"Deputy Manager, Credit"},"32436":{"name":"Taslima Akther","designation":"Deputy Manager, Foreign Trade"},"13165":{"name":"Mohtasim Alam Galib","designation":"Deputy Manager, Business Finance- Hygiene & Elect."},"6369":{"name":"Kazi Marouf Rezvey Johni","designation":"Deputy Accounts Manager"},"28933":{"name":"Enayet Islam Shakil","designation":"Deputy Manager, Costing"},"10311":{"name":"Md. Mahbubur Rahman","designation":"Deputy Manager, Accounts"},"11280":{"name":"Md. Hafizur Rahman","designation":"Deputy Manager, Accounts"},"3642":{"name":"Mohammad Anwarul Islam","designation":"Deputy Manager, Fixed Assets & Advances"},"38956":{"name":"Syed Hasrat Zafor","designation":"Deputy Manager, VAT"},"5427":{"name":"Mijanur Rahman","designation":"Deputy Manager, Procurement Accounting"},"22292":{"name":"Md. Anamul Haque","designation":"Deputy Manager, Planning"},"41033":{"name":"Md. Sanaullah Fahim","designation":"Deputy Manager, Finance"},"41982":{"name":"Tanjil Ahmed","designation":"Deputy Manager, Financial Processes"},"20326":{"name":"Md. Taufiqur Rahman","designation":"Deputy Manager, Accounts"},"38730":{"name":"Sohan Al Akbar","designation":"Deputy Manager, Business Analyst"},
+"23290":{"name":"Md. Nazrul Islam","designation":"Deputy Manager, VAT"},
+"38778":{"name":"Md. Sadid Uddin","designation":"Deputy Manager, Business Analyst"},
+"26578":{"name":"Md. Humyon Kabir","designation":"Assistant Manager, Verification & Recovery"},
+"26251":{"name":"Mehedi Hasan","designation":"Assistant Manager, Financial Reporting"},
+"31878":{"name":"Md. Shahidul Islam","designation":"Assistant Manager, Finance"},
+"26066":{"name":"Aminur Rahman","designation":"Assistant Manager, Credit"},
+"25029":{"name":"Md. Shahed Khan","designation":"Assistant Manager, Treasury"},
+"17459":{"name":"Abu Hasan Al-Nahiyan","designation":"Assistant Manager, Finance"},
+"26420":{"name":"Moshiul Alom Chowdhury","designation":"Assistant Manager, Direct Tax"},
+"26795":{"name":"Rakibul Hasan Rakib","designation":"Assistant Manager, Finance"},
+"15634":{"name":"Asikur Rahman Rasel","designation":"Assistant Manager, Finance"},
+"31042":{"name":"Md Aminul Islam","designation":"Assistant Manager, Operations Finance"},
+"20836":{"name":"Md. Raihan Uddin","designation":"Assistant Manager, Operations Finance"},
+"15542":{"name":"Md. Imran Ullah","designation":"Assistant Manager, VAT"},
+"23735":{"name":"Md. Asafuddaulla","designation":"Assistant Manager, Accounts"},
+"26103":{"name":"Mahbuba Sultana","designation":"Assistant Manager, Business Analyst"},
+"18199":{"name":"Md. Ajmol Islam","designation":"Assistant Manager, Credit"},
+"41253":{"name":"Nur Mohammed","designation":"Assistant Manager, Planning"},
+"26776":{"name":"Anik Ahamed","designation":"Assistant Manager, Finance"},
+"33321":{"name":"Md. Amirul Islam","designation":"Assistant Manager, Credit"},
+"2875":{"name":"Amitav Sarker","designation":"Assistant Manager, VAT"},
+"15017":{"name":"Md. Mahbub Alam","designation":"Assistant Manager, VAT"},
+"31381":{"name":"Md. Rezwanul Islam","designation":"Assistant Manager, Operations Finance"},
+"33293":{"name":"Md. Aminul Islam","designation":"Assistant Manager, VAT"},
+"38779":{"name":"Foez Ahmed Kabir","designation":"Assistant Manager, Finance"},
+"37559":{"name":"Anup Acharjhya","designation":"Assistant Manager, Credit"},
+"33320":{"name":"Md. Hafiz Kad Kanon","designation":"Assistant Manager, Receivable Planning"},
+"38366":{"name":"Simanta Sarker","designation":"Assistant Manager, Credit"},
+"34231":{"name":"Md. Masud Rana","designation":"Assistant Manager, Business Finance-Seed"},
+"16792":{"name":"Imdadul Haque","designation":"Assistant Manager, Finance"},
+"28804":{"name":"Nurul Huda Tunir","designation":"Senior Executive, Procurement Accounting"},
+"26539":{"name":"Shah Ahsan Hafiz","designation":"Senior Verification & Recovery Officer"},
+"29899":{"name":"Md Bahadur Ali","designation":"Senior Verification & Recovery Officer"},
+"28007":{"name":"Tawsif Ahmed Khan","designation":"Senior Finance Executive"},
+"5800":{"name":"Shankar Chandra Majumder","designation":"Senior Corporate Cash Executive"},
+"30054":{"name":"Md. Ali Forhan","designation":"Senior Executive, Costing"},
+"30272":{"name":"Mahbub Ahmed","designation":"Senior Finance Executive"},
+"30898":{"name":"Rabea Akter Shoily","designation":"Senior Corporate Analyst"},
+"32985":{"name":"Akhtie Ara Taposhe","designation":"Senior Executive, CIC"},
+"28567":{"name":"Md. Zahid Hasan","designation":"Senior Business Analyst"},
+"28859":{"name":"Tazria Giash Hridi","designation":"Senior Executive, Finance"},
+"33298":{"name":"Ehteshamul Haque Abid","designation":"Senior Business Analyst"},
+"30903":{"name":"Adnan Al-Rahin","designation":"Senior Finance Executive"},
+"24625":{"name":"Avijit Chowdhury","designation":"Senior Credit Executive"},
+"31843":{"name":"Md. Ala Uddin","designation":"Sr. Planning Analyst"},
+"935":{"name":"Md. Mobaraque Hossain","designation":"Senior Accounts Officer"},
+"40503":{"name":"Md. Rashadul Islam Rabbi","designation":"Senior Finance Executive"},
+"34531":{"name":"Md. Abdur Razzak","designation":"Senior Finance Executive"},
+"19714":{"name":"Afroz Sarker Emran","designation":"Senior Executive, Treasury"},
+"32412":{"name":"Araf Noor Iqbal","designation":"Senior Business Analyst"},
+"32418":{"name":"Md. Junaid Bogdad","designation":"Senior Planning Analyst"},
+"27311":{"name":"Rahadul Islam","designation":"Senior Treasury Executive"},
+"26830":{"name":"Hridoy Saha","designation":"Senior Credit Executive"},
+"31043":{"name":"Labiba Haq Oishe","designation":"Senior Corporate Analyst"},
+"30904":{"name":"Md Mazharul Alam","designation":"Senior Executive, Taxation"},
+"30820":{"name":"Md. Mohibul Islam","designation":"Senior Cost Analyst"},
+"34202":{"name":"Md. Azgur Ali","designation":"Senior Executive, Taxation"},
+"34495":{"name":"Aporajita Ali Abanti","designation":"Senior Planning Analyst"},
+"26831":{"name":"Md. Moniruzzaman Rubel","designation":"Senior Finance Executive"},
+"34260":{"name":"Ayesha Feroz Roza","designation":"Senior Business Analyst"},
+"999":{"name":"Mohammad Mostaqur Rahman Chowdhury","designation":"Senior Accounts Officer"},
+"27608":{"name":"Md. Jamal Sarker","designation":"Senior Verification & Recovery Officer"},
+"39134":{"name":"Md Humayon Kobir","designation":"Senior Officer, Verification & Recovery"},
+"23235":{"name":"Md. Shaiful Bashar","designation":"Senior Finance Executive"},
+"28813":{"name":"Md. Ehasan Mourtaza","designation":"Senior Finance Executive"},
+"41568":{"name":"Md. Nadim Mahmud","designation":"Senior Coordination Officer"},
+"31631":{"name":"Ahmed Ashikur Rahman","designation":"Senior Corporate Analyst"},
+"34258":{"name":"Muhammad Abu Ashrar","designation":"Senior Executive, Market Audit"},
+"36858":{"name":"Sanjoy Kumar Roy","designation":"Senior Accounts Officer"},
+"41761":{"name":"Vishmadeb Saha","designation":"Senior Accounts Officer"},
+"37809":{"name":"Milon Sen Gupta","designation":"Senior Credit Executive"},
+"33448":{"name":"Md. Ataur Rahman","designation":"Senior Documentation Officer"},
+"27633":{"name":"Erfan Ahmed","designation":"Senior Corporate Analyst"},
+"27626":{"name":"Imon Hasan Anik","designation":"Senior Business Analyst"},
+"15032":{"name":"Md. Motasim Billah","designation":"Senior Officer, VAT"},
+"6953":{"name":"Md. Noor Uddin","designation":"Senior Executive, Payroll Accounting"},
+"37264":{"name":"Md. Ashikur Rahman","designation":"Senior Executive, Taxation"},
+"33570":{"name":"Rahat Kajmir Sizan","designation":"Senior Executive, Treasury"},
+"36857":{"name":"Md. Ashraful Alam","designation":"Senior Accounts Officer"},
+"31672":{"name":"Abu Sayeed Md Ashraf","designation":"Senior Executive, Treasury"},
+"41452":{"name":"Abdush Salam Pappu","designation":"Senior Officer, Verification & Recovery"},
+"37781":{"name":"Md. Naymul Islam","designation":"Senior Finance Executive"},
+"29851":{"name":"Toufekul Islam Biswas","designation":"Senior Finance Executive"},
+"39133":{"name":"Md. Shahabuddin Ali","designation":"Senior Recovery Officer"},
+"38832":{"name":"Md. Shamsur Rahman Heera","designation":"Senior Finance Executive"},
+"38833":{"name":"Tareq Abdullah Taukir","designation":"Senior Finance Executive"},
+"35144":{"name":"Mahtab Uddin Ahmed","designation":"Senior Credit Executive"},
+"41969":{"name":"Fokhrul Islam","designation":"Senior Finance Executive"},
+"41453":{"name":"Md. Milon Hosen","designation":"Senior Officer, Verification & Recovery"},
+"41154":{"name":"Masud Siddique","designation":"Senior Finance Executive"},
+"31398":{"name":"Md. Fahad Bhuiyan","designation":"Sr. Planning Analyst"},
+"36859":{"name":"A.S.M Quamruzzaman","designation":"Senior Officer, Payables"},
+"39138":{"name":"Likhan Molla","designation":"Senior Officer, Verification & Recovery"},
+"35143":{"name":"Zawad Ahmed","designation":"Senior Creative Executive"},
+"28095":{"name":"Shawon Das","designation":"Senior Business Analyst"},
+"37778":{"name":"Shazid Chowdhury","designation":"Senior Accounts Officer"},
+"24752":{"name":"Md. Shafikul Islam","designation":"Senior Executive, VAT"},
+"42209":{"name":"Md. Nurujaman Nayan","designation":"Senior Coordination Officer"},
+"33571":{"name":"Muksit Sadek","designation":"Treasury Executive"},
+"30818":{"name":"Sayed Abdul Hasib","designation":"Cost Analyst"},
+"32317":{"name":"Abdullah Al Mamun","designation":"Finance Executive"},
+"34232":{"name":"Subrata Majumder","designation":"Credit Executive"},
+"28935":{"name":"Kashafuddoza Chowdhury","designation":"Finance Executive"},
+"30070":{"name":"Md. Kamrul Ahsan","designation":"Finance Executive, Costing"},
+"32253":{"name":"Md Safayat Hasan","designation":"Credit Executive"},
+"32414":{"name":"Arif Billah","designation":"Cash Officer"},
+"6988":{"name":"Regan Barua","designation":"Corporate Cash Executive"},
+"31877":{"name":"Nur Hosen","designation":"Corporate Analyst"},
+"31001":{"name":"Md. Shirajul Islam Sajib","designation":"Business Analyst"},
+"31062":{"name":"Shaibal Barua","designation":"Finance Executive"},
+"33692":{"name":"Kazi Muhammad Anamul Hasan","designation":"Executive, Market Audit"},
+"40521":{"name":"Mohammad Rifat Hossain","designation":"Planning Analyst"},
+"41529":{"name":"Sweety Dewan","designation":"Communication Officer to the Treasury"},
+"41238":{"name":"Tanvir Hasan","designation":"Documentation Executive"},
+"34611":{"name":"Lamia Mahpara","designation":"Credit Analyst"},
+"26282":{"name":"Md. Navid Haque","designation":"Credit Executive"},
+"33322":{"name":"Md. Azizul Hoque Babu","designation":"Recovery Officer"},
+"41450":{"name":"Md. Mehedi Hasan","designation":"Verification & Recovery Officer"},
+"41542":{"name":"Md. Monjurul Haque","designation":"Credit Executive"},
+"41199":{"name":"Saif Saem Islam","designation":"Business Analyst"},
+"40520":{"name":"Md. Toabur Rahman","designation":"Planning Analyst"},
+"38780":{"name":"Md. Tahmid Abdullah Nafim","designation":"Finance Executive"},
+"31245":{"name":"Md. Rejoanul Islam","designation":"VAT Officer"},
+"41497":{"name":"Sumiya Abadin Asha","designation":"Credit Executive"},
+"41518":{"name":"Saif Ullah","designation":"Business Analyst"},
+"36861":{"name":"Mohammad Jalal Miah","designation":"Documentation Officer"},
+"30053":{"name":"Mohammed Abdus Salam","designation":"Finance Executive, Taxation"},
+"33504":{"name":"Md. Shahjahan Miah","designation":"Treasury Executive"},
+"41547":{"name":"Md. Mahbubur Rahman","designation":"Credit Executive"},
+"38594":{"name":"Ashfaqur Rahman Avash","designation":"Credit Executive"},
+"37448":{"name":"Sourov Sikder","designation":"Cash Officer"},
+"37575":{"name":"Prianka Ghosh Puja","designation":"Planning Analyst"},
+"37883":{"name":"Masheat Islam Mim","designation":"Executive, Collateral & Security Documents"},
+"38878":{"name":"Saniya Jahan Nazla","designation":"Business Analyst"},
+"38148":{"name":"Salimul Fattah","designation":"Business Analyst"},
+"37870":{"name":"Md. Kawser Alam","designation":"Business Analyst"},
+"41367":{"name":"Mujahidul Islam","designation":"Executive, Corporate Insurance Management"},
+"32444":{"name":"Md. Taohidur Rahaman Shifat","designation":"Business Analyst"},
+"38824":{"name":"Sharna Paul","designation":"Accounts Officer"},
+"38163":{"name":"Mehenaz Zabin","designation":"Business Analyst"},
+"38578":{"name":"Md Tareq Rahaman","designation":"Executive, Market Audit"},
+"38877":{"name":"Purba Dutta","designation":"Business Analyst"},
+"38766":{"name":"Md. Iftakharul Islam","designation":"Executive, Market Audit"},
+"38834":{"name":"Md. Monir Hossain","designation":"Finance Executive"},
+"41200":{"name":"Mirza Habibur Rahman","designation":"Business Analyst"},
+"39132":{"name":"Md. Abul Khair","designation":"Recovery Officer"},
+"38350":{"name":"Sabrina Sarawer Writu","designation":"Credit Executive"},
+"36911":{"name":"Md.Siful Islam Jewel","designation":"Assistant Officer"},
+"38166":{"name":"Akib Mia","designation":"Assistant Documentation Officer"},
+"42982":{"name":"Md. Kamruzzaman","designation":"Assistant Manager- Payroll & Employee Fund Management"}};
+
+function fillStaffDetails() {
+  const staffId = $("staffId").value.trim();
+  const employee = EMPLOYEE_DATA[staffId];
+
+  if (employee) {
+    $("staffName").value = employee.name;
+    $("designation").value = employee.designation;
+    $("error").style.display = "none";
+  } else {
+    // If Staff ID is not in the employee database, allow the user to enter
+    // Staff Name and Designation manually.
+    $("staffName").value = "";
+    $("designation").value = "";
+  }
+}
+
+$("staffId").addEventListener("input", fillStaffDetails);
+
+
+function createLaptopBoxes(count){
+  laptopList.innerHTML = "";
+  if(!count || count < 1) return;
+  for(let i=1;i<=count;i++){
+    const row = document.createElement("div");
+    row.className = "laptop-item";
+    row.innerHTML = `
+      <div class="serial">${i}</div>
+      <textarea required data-laptop="${i}" placeholder="Brand / Model  / Serial No. "></textarea>
+    `;
+    laptopList.appendChild(row);
+  }
+}
+
+
+function createDeviceBoxes(list, dataAttr, count, placeholder){
+  list.innerHTML="";
+  if(!count || count<1) return;
+  for(let i=1;i<=count;i++){ const row=document.createElement("div"); row.className="laptop-item"; row.innerHTML=`<div class="serial">${i}</div><textarea required data-${dataAttr}="${i}" placeholder="${placeholder}"></textarea>`; list.appendChild(row); }
+}
+laptopCount.addEventListener("change", () => {
+  errorBox.style.display = "none";
+  if(laptopCount.value === "more"){
+    customCount.style.display = "block";
+    customLaptopCount.focus();
+    laptopList.innerHTML = "";
+  }else{
+    customCount.style.display = "none";
+    customLaptopCount.value = "";
+    createLaptopBoxes(Number(laptopCount.value));
+  }
+});
+
+customLaptopCount.addEventListener("keydown", e => {
+  if(e.key === "Enter"){
+    e.preventDefault();
+    const n = Number(customLaptopCount.value);
+    if(Number.isInteger(n) && n >= 5 && n <= 100){
+      createLaptopBoxes(n);
+      errorBox.style.display = "none";
+    }else{
+      showError("Please enter a whole number from 5 to 100.");
+    }
+  }
+});
+
+desktopAssigned.addEventListener("change", () => { desktopCountWrap.style.display = desktopAssigned.value === "Yes" ? "block" : "none"; if(desktopAssigned.value !== "Yes"){ desktopCount.value=""; customDesktopCountWrap.style.display="none"; customDesktopCount.value=""; desktopList.innerHTML=""; }});
+desktopCount.addEventListener("change", () => { if(desktopCount.value === "more"){ customDesktopCountWrap.style.display="block"; customDesktopCount.focus(); desktopList.innerHTML=""; } else { customDesktopCountWrap.style.display="none"; customDesktopCount.value=""; createDeviceBoxes(desktopList,"desktop",Number(desktopCount.value),"Brand / Model / Serial No."); }});
+customDesktopCount.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); const n=Number(customDesktopCount.value); if(Number.isInteger(n)&&n>=5&&n<=100) createDeviceBoxes(desktopList,"desktop",n,"Brand / Model / Serial No."); else showError("Please enter a whole number from 5 to 100 for desktops."); }});
+monitorAssigned.addEventListener("change", () => { monitorCountWrap.style.display = monitorAssigned.value === "Yes" ? "block" : "none"; if(monitorAssigned.value !== "Yes"){ monitorCount.value=""; customMonitorCountWrap.style.display="none"; customMonitorCount.value=""; monitorList.innerHTML=""; }});
+monitorCount.addEventListener("change", () => { if(monitorCount.value === "more"){ customMonitorCountWrap.style.display="block"; customMonitorCount.focus(); monitorList.innerHTML=""; } else { customMonitorCountWrap.style.display="none"; customMonitorCount.value=""; createDeviceBoxes(monitorList,"monitor",Number(monitorCount.value),"Brand / Model / Serial No. / Size"); }});
+customMonitorCount.addEventListener("keydown", e => { if(e.key === "Enter"){ e.preventDefault(); const n=Number(customMonitorCount.value); if(Number.isInteger(n)&&n>=5&&n<=100) createDeviceBoxes(monitorList,"monitor",n,"Brand / Model / Serial No. / Size"); else showError("Please enter a whole number from 5 to 100 for monitors."); }});
+
+function showError(msg){
+  errorBox.textContent = msg;
+  errorBox.style.display = "block";
+  successBox.style.display = "none";
+}
+
+$("assetForm").addEventListener("submit", e => {
+  e.preventDefault();
+  errorBox.style.display = "none";
+  successBox.style.display = "none";
+
+  if(!$("staffName").value.trim() || !$("staffId").value.trim() || !$("designation").value.trim()){
+    showError("Please complete Staff Name, Staff ID and Designation.");
+    return;
+  }
+  if(!laptopCount.value){
+    showError("Please select the number of laptops.");
+    return;
+  }
+
+  let n = laptopCount.value === "more" ? Number(customLaptopCount.value) : Number(laptopCount.value);
+  if(!Number.isInteger(n) || n < 1){
+    showError("Please enter the laptop quantity and press Enter.");
+    return;
+  }
+  if(laptopCount.value === "more" && n < 5){
+    showError("For More than 4, enter a number of 5 or more and press Enter.");
+    return;
+  }
+
+  const boxes = [...document.querySelectorAll("[data-laptop]")];
+  if(boxes.length !== n){
+    showError("Please press Enter after entering the total number of laptops.");
+    return;
+  }
+  if(boxes.some(x => !x.value.trim())){
+    showError("Please complete the details for every laptop.");
+    return;
+  }
+  if(!desktopAssigned.value){ showError("Please select Yes or No for Desktop."); return; }
+  let desktopN=0;
+  if(desktopAssigned.value === "Yes"){ if(!desktopCount.value){showError("Please select the number of desktops.");return;} desktopN=desktopCount.value==="more"?Number(customDesktopCount.value):Number(desktopCount.value); if(!Number.isInteger(desktopN)||desktopN<1){showError("Please enter the desktop quantity and press Enter.");return;} if(desktopCount.value==="more"&&desktopN<5){showError("For More than 4 desktops, enter a number of 5 or more and press Enter.");return;} const db=[...document.querySelectorAll("[data-desktop]")]; if(db.length!==desktopN){showError("Please press Enter after entering the total number of desktops.");return;} if(db.some(x=>!x.value.trim())){showError("Please complete the details for every desktop.");return;} }
+  if(!monitorAssigned.value){ showError("Please select Yes or No for Monitor."); return; }
+  let monitorN=0;
+  if(monitorAssigned.value === "Yes"){ if(!monitorCount.value){showError("Please select the number of monitors.");return;} monitorN=monitorCount.value==="more"?Number(customMonitorCount.value):Number(monitorCount.value); if(!Number.isInteger(monitorN)||monitorN<1){showError("Please enter the monitor quantity and press Enter.");return;} if(monitorCount.value==="more"&&monitorN<5){showError("For More than 4 monitors, enter a number of 5 or more and press Enter.");return;} const mb=[...document.querySelectorAll("[data-monitor]")]; if(mb.length!==monitorN){showError("Please press Enter after entering the total number of monitors.");return;} if(mb.some(x=>!x.value.trim())){showError("Please complete the details for every monitor.");return;} }
+  
+
+  const data = {
+    timestamp: new Date().toISOString(),
+    staffName: $("staffName").value.trim(),
+    staffId: $("staffId").value.trim(),
+    designation: $("designation").value.trim(),
+    laptopCount: n,
+    laptops: boxes.map(x => x.value.trim()),
+    desktop: desktopAssigned.value,
+    desktopCount: desktopN,
+    desktops: [...document.querySelectorAll("[data-desktop]")].map(x => x.value.trim()),
+    monitor: monitorAssigned.value,
+    monitorCount: monitorN,
+    monitors: [...document.querySelectorAll("[data-monitor]")].map(x => x.value.trim())
+  };
+
+  // DEMO MODE: stores the submitted record in this browser.
+  // Replace this section with a Google Apps Script endpoint for central online collection.
+ const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyr7FSvw8ueau-KRnOz6p3N83TBjQCpuKwC_S_yuCymuusorI3pXIate3LrpzMSPT56/exec";
+
+fetch(APPS_SCRIPT_URL, {
+  method: "POST",
+  mode: "no-cors",
+  headers: {
+    "Content-Type": "text/plain;charset=utf-8"
+  },
+  body: JSON.stringify(data)
+})
+.then(() => {
+  formPage.style.display = "none";
+  successPage.style.display = "block";
+  window.scrollTo({top: 0, behavior: "smooth"});
+})
+.catch(error => {
+  showError("Submission failed. Please try again.");
+  console.error(error);
+});
+
+  formPage.style.display = "none";
+  successPage.style.display = "block";
+  window.scrollTo({top:0,behavior:"smooth"});
+});
+
+$("clearBtn").addEventListener("click", () => {
+  $("assetForm").reset();
+  $("staffName").value = "";
+  $("designation").value = "";
+  customCount.style.display = "none";
+  customLaptopCount.value = "";
+  laptopList.innerHTML = "";
+  desktopCountWrap.style.display="none"; customDesktopCountWrap.style.display="none"; customDesktopCount.value=""; desktopList.innerHTML="";
+  monitorCountWrap.style.display="none"; customMonitorCountWrap.style.display="none"; customMonitorCount.value=""; monitorList.innerHTML="";
+  errorBox.style.display = "none";
+  successBox.style.display = "none";
+});
+</script>
+</body>
+</html>
